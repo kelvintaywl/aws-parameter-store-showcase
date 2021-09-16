@@ -9,14 +9,19 @@ jobs:
       - image: cimg/python:3.9.7
     steps:
       - aws-parameter-store/load
-      - run: |
-          # aws-parameter-store/loads exports the env vars into /tmp/parameterstore/PARAMETERSTORESOURCEFILE
-          # https://circleci.com/developer/orbs/orb/circleci/aws-parameter-store#commands-load
-          # However, we still need to source this file again here, or even in post-steps,
-          # because each step is executed in its own shell.
-          source /tmp/parameterstore/PARAMETERSTORESOURCEFILE
-          echo "${ktwl_password}" | docker login -u $ktwl_username --password-stdin
-
+      - run:
+          name: Docker login
+          command: |
+            # aws-parameter-store/loads exports the env vars into /tmp/parameterstore/PARAMETERSTORESOURCEFILE
+            # https://circleci.com/developer/orbs/orb/circleci/aws-parameter-store#commands-load
+            # However, we still need to source this file again here, or even in post-steps,
+            # because each step is executed in its own shell.
+            source /tmp/parameterstore/PARAMETERSTORESOURCEFILE
+            echo "${ktwl_password}" | docker login -u $ktwl_username --password-stdin
+      - run:
+          name: Docker logout
+          command: docker logout
+ 
 workflows:
   main:
     jobs:

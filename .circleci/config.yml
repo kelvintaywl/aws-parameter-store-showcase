@@ -15,7 +15,7 @@ jobs:
           # However, we still need to source this file again here, or even in post-steps,
           # because each step is executed in its own shell.
           source /tmp/parameterstore/PARAMETERSTORESOURCEFILE
-          docker login -u $ktwl_username -p $ktwl_password
+          echo "${ktwl_password}" | docker login -u $ktwl_username --password-stdin
 
 workflows:
   main:

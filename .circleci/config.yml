@@ -3,21 +3,11 @@ version: 2.1
 orbs:
   aws-parameter-store: circleci/aws-parameter-store@1.0.0
 
-jobs:
-  docker_auth:
-    environment:
-      AWS_DEFAULT_REGION: ap-northeast-1
-    docker:
-      - image: cimg/python:3.9.7
-    steps:
-      - aws-parameter-store/load
-      - run: |
-          env
-      - run: |
-          docker login -u $ktwl_username -p $ktwl_password
-
 workflows:
   main:
     jobs:
-      - docker_auth:
+      - aws-parameter-store/with-secrets:
+          post-steps:
+            - run: |
+                docker login -u $ktwl_username -p $ktwl_password
           context: temp_aws

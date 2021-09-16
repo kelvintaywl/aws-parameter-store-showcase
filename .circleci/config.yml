@@ -1,0 +1,18 @@
+version: 2.1
+
+orbs:
+  aws-parameter-store: circleci/aws-parameter-store@1.0.0
+
+jobs:
+  docker_auth:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+workflows:
+  main:
+    jobs:
+      - docker_auth:
+          context: docker-cred

@@ -5,6 +5,8 @@ orbs:
 
 jobs:
   docker_auth:
+    environment:
+      AWS_DEFAULT_REGION: ap-northeast-1
     docker:
       - image: cimg/python:3.9.7
     steps:

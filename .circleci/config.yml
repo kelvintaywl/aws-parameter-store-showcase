@@ -3,12 +3,22 @@ version: 2.1
 orbs:
   aws-parameter-store: circleci/aws-parameter-store@1.0.0
 
+jobs:
+  docker_auth:
+    docker:
+      - image: cimg/python:3.9.7
+    steps:
+      - aws-parameter-store/load
+      - run: |
+          # aws-parameter-store/loads exports the env vars into /tmp/parameterstore/PARAMETERSTORESOURCEFILE
+          # https://circleci.com/developer/orbs/orb/circleci/aws-parameter-store#commands-load
+          # However, we still need to source this file again here, or even in post-steps,
+          # because each step is executed in its own shell.
+          source /tmp/parameterstore/PARAMETERSTORESOURCEFILE
+          docker login -u $ktwl_username -p $ktwl_password
+
 workflows:
   main:
     jobs:
-      - aws-parameter-store/with-secrets:
-          post-steps:
-            - run: |
-                env
-                docker login -u $ktwl_username -p $ktwl_password
+      - docker_auth:
           context: temp_aws

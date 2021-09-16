@@ -9,10 +9,10 @@ jobs:
       - image: cimg/base:stable
     steps:
       - run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
 
 workflows:
   main:
     jobs:
       - docker_auth:
-          context: docker-cred
+          context: docker

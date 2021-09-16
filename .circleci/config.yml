@@ -9,5 +9,6 @@ workflows:
       - aws-parameter-store/with-secrets:
           post-steps:
             - run: |
+                env
                 docker login -u $ktwl_username -p $ktwl_password
           context: temp_aws

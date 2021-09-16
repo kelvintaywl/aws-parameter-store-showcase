@@ -12,6 +12,8 @@ jobs:
     steps:
       - aws-parameter-store/load
       - run: |
+          env
+      - run: |
           docker login -u $ktwl_username -p $ktwl_password
 
 workflows:

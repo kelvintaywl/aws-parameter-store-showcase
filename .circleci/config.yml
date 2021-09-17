@@ -6,6 +6,9 @@ orbs:
 jobs:
   docker_auth:
     docker:
+      # An image with Python runtime is required, since
+      # aws-parameter-store Orb will install the AWS CLI via Python
+      # See https://circleci.com/developer/orbs/orb/circleci/aws-parameter-store#commands-load
       - image: cimg/python:3.9.7
     steps:
       - aws-parameter-store/load
@@ -25,5 +28,4 @@ jobs:
 workflows:
   main:
     jobs:
-      - docker_auth:
-          context: temp_aws
+      - docker_auth

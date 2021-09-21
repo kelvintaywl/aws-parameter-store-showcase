@@ -12,7 +12,7 @@ jobs:
       - run:
           name: set parameter from AWS parameter store
           command: |
-            DOCKER_USERNAME=$(aws get-parameter --with-decryption --name "ktwl_username" | jq '.Parameter.Value')
+            DOCKER_USERNAME=$(aws ssm get-parameter --with-decryption --name "ktwl_username" | jq '.Parameter.Value')
             echo "export DOCKER_USERNAME=${DOCKER_USERNAME}" >> $BASH_ENV
       - run:
           name: echo

@@ -1,30 +1,23 @@
 version: 2.1
 
 orbs:
-  aws-parameter-store: circleci/aws-parameter-store@1.0.0
+  aws-cli: circleci/aws-cli@2.0.3
 
 jobs:
   docker_auth:
     docker:
-      # An image with Python runtime is required, since
-      # aws-parameter-store Orb will install the AWS CLI via Python
-      # See https://circleci.com/developer/orbs/orb/circleci/aws-parameter-store#commands-load
       - image: cimg/python:3.9.7
     steps:
-      - aws-parameter-store/load
+      - aws-cli/setup
       - run:
-          name: Docker login
+          name: set parameter from AWS parameter store
           command: |
-            # aws-parameter-store/loads exports the env vars into /tmp/parameterstore/PARAMETERSTORESOURCEFILE
-            # https://circleci.com/developer/orbs/orb/circleci/aws-parameter-store#commands-load
-            # However, we still need to source this file again here, or even in post-steps,
-            # because each step is executed in its own shell.
-            source /tmp/parameterstore/PARAMETERSTORESOURCEFILE
-            echo "${ktwl_password}" | docker login -u $ktwl_username --password-stdin
+            DOCKER_USERNAME=$(aws get-parameter --with-decryption --name "ktwl_username" | jq '.Parameter.Value')
+            echo "export DOCKER_USERNAME=${DOCKER_USERNAME}" >> $BASH_ENV
       - run:
-          name: Docker logout
-          command: docker logout
- 
+          name: echo
+          command: echo $DOCKER_USERNAME
+
 workflows:
   main:
     jobs:
